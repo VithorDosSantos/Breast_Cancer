@@ -26,6 +26,11 @@ O dataset utilizado é o **Breast Cancer Wisconsin**, disponível nativamente no
   - **0 - Maligno**: 212 casos (37.26%)
   - **1 - Benigno**: 357 casos (62.74%)
 
+#### Codificacao do Target
+
+- **Classe positiva adotada**: maligno (0)
+- Em problemas medicos, costuma-se tratar **maligno como positivo** para priorizar o recall dessa classe.
+
 #### Features Principais:
 
 Para cada célula, foram calculadas 10 características principais e suas estatísticas (média, erro padrão e "pior" valor):
@@ -139,16 +144,18 @@ Resultados da última execução (podem variar levemente):
 A **Matriz de Confusão** é crucial neste contexto médico:
 
 ```
-                Predito
-              Maligno  Benigno
+Classe positiva: maligno
+
+       Predito
+        Maligno  Benigno
 Real Maligno    [TP]    [FN] ⚠️ CRÍTICO
-     Benigno    [FP]    [TN]
+  Benigno    [FP]    [TN]
 ```
 
-- **Verdadeiros Positivos (TP)**: Tumores benignos corretamente identificados
-- **Verdadeiros Negativos (TN)**: Tumores malignos corretamente identificados
-- **Falsos Positivos (FP)**: Falso alarme (benigno classificado como maligno)
-- **Falsos Negativos (FN)**: **CRÍTICO** - Tumor maligno não detectado
+- **Verdadeiros Positivos (TP)**: Tumores malignos corretamente identificados
+- **Verdadeiros Negativos (TN)**: Tumores benignos corretamente identificados
+- **Falsos Positivos (FP)**: Benigno classificado como maligno (falso alarme)
+- **Falsos Negativos (FN)**: **CRÍTICO** - Maligno classificado como benigno
 
 ### Por que a Matriz de Confusão é Importante?
 
