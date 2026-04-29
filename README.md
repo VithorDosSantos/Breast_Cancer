@@ -67,8 +67,9 @@ Este dataset é amplamente utilizado na comunidade científica para:
 
 ### 2. Pré-processamento
 - Separação de features (X) e target (y)
-- Divisão em conjuntos de treino (80%) e teste (20%)
-- **Normalização Min-Max**: Fundamental para o SVM, coloca todas as features na escala [0, 1]
+- Divisão em conjuntos de treino (80%) e teste (20%) com `stratify=y`
+- **Normalização Min-Max** ajustada apenas no treino e aplicada no teste
+- Uso de **Pipeline** no Grid Search para evitar vazamento de dados (data leakage)
 
 ### 3. Modelagem
 Três abordagens foram testadas:
@@ -87,6 +88,7 @@ Três abordagens foram testadas:
   - **C**: [0.1, 1, 10, 100] - Parâmetro de regularização
   - **gamma**: [1, 0.1, 0.01, 0.001] - Coeficiente do kernel RBF
   - **kernel**: ['rbf'] - Radial Basis Function
+- Pipeline: `MinMaxScaler` + `SVC`
 
 ### 4. Avaliação
 Métricas utilizadas:
@@ -94,6 +96,9 @@ Métricas utilizadas:
 - **Matriz de Confusão**: Análise detalhada de acertos e erros
 - **Precision, Recall, F1-Score**: Métricas por classe
 - **Validação Cruzada**: 5-fold cross-validation no Grid Search
+- **Overfitting**: comparação treino vs teste
+- **Falsos Negativos (FN)**: foco na classe maligna
+- **Validação Cruzada Estratificada**: 5-fold com `StratifiedKFold`
 
 ## 📊 Resultados
 
@@ -104,6 +109,30 @@ Métricas utilizadas:
 | SVM Inicial | ~62.8% | Sem normalização |
 | SVM Normalizado | ~96.5% | Com Min-Max Scaling |
 | SVM Otimizado | ~97.4% | Com Grid Search |
+
+### Confiabilidade (checagens finais)
+
+Resultados da última execução (podem variar levemente):
+
+- **Acurácia teste (modelo otimizado)**: 0.9737
+- **Acurácia treino vs teste**: 0.9890 vs 0.9737 (gap pequeno)
+- **Falsos Negativos (malignos)**: 2
+- **Recall da classe maligna**: 0.9762
+- **Balanceamento**: 62.74% benignos / 37.26% malignos
+
+### Validação Cruzada Estratificada (5-fold)
+
+- **Accuracy**: 0.9772 ± 0.0163
+- **Precision**: 0.9781 ± 0.0183
+- **Recall**: 0.9861 ± 0.0124
+- **F1**: 0.9820 ± 0.0126
+
+### Métricas por Classe (teste, modelo otimizado)
+
+| Classe | Precision | Recall | F1-Score | Support |
+|--------|-----------|--------|----------|---------|
+| Maligno | 0.9535 | 0.9762 | 0.9647 | 42 |
+| Benigno | 0.9859 | 0.9722 | 0.9790 | 72 |
 
 ### Matriz de Confusão
 
@@ -180,7 +209,7 @@ Breast Cancer/
 
 - [ ] Implementar outros algoritmos (Random Forest, XGBoost, Neural Networks)
 - [ ] Análise de importância das features
-- [ ] Cross-validation estratificada
+- [ ] Ajustar limiar de decisão com foco em reduzir falsos negativos
 - [ ] Implementar técnicas de explicabilidade (SHAP, LIME)
 - [ ] Deploy do modelo em API Flask/FastAPI
 - [ ] Interface web para predições em tempo real
